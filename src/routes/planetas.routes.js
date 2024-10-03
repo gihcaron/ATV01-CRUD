@@ -1,103 +1,110 @@
 import { response, Router } from "express"
 
-const filmesRoutes = Router()
+const planetasRoutes = Router()
 
-let filmesMarcantes = [ 
+
+let planetas = [ 
     {
     id:  Number(Math.floor(Math.random() * 99)+1),
-    titulo: "E assim que acaba",
-    genero: "Drama",
-    emCartaz: false,
-    },
-    {
-        id: Number(Math.floor(Math.random() * 99)+1),
-        titulo: "Toy Story",
-        genero: "Animacao",
-        emCartaz: false,
-        },
-        {
-            id:  Number(Math.floor(Math.random() * 99)+1),
-            titulo: "Sherek",
-            genero: "Animacao",
-            emCartaz: false,
-        }
+    nome: "Planeta Dev",
+    temperatura: 28.4,
+    agua: false,  //Indicação de existência de água
+    atm: [
+        "JS","NODE",  "VS", "Code"],
+}
 ]
 
-// Rota buscar todos os elementos do array filmesMarcantes
-filmesRoutes.get("/", (req, res) => {
-    return res.status(200).json(filmesMarcantes);
+// Rota buscar todos os elementos do array planetas
+planetasRoutes.get("/", (req, res) => {
+    return res.status(200).json(planetas);
 })
 
-// Rota para criar novos elementos do array  filmesMarcantes
-filmesRoutes.post("/", (req, res) => {
-    const { titulo, genero, emCartaz} = req.body;
+// Rota para criar novos elementos do array  planetas
+planetasRoutes.post("/", (req, res) => {
+    const { nome, temperatura, agua, atm} = req.body
 
-    const novoFilme = {
-        id: Number(Math.floor(Math.random() * 99)+1),
-       titulo,
-       genero,
-       emCartaz,
+    if (!nome || !temperatura || !agua){
+        return res.status(400).send({ message: "Os campos nome, temperatura e agua são obrigatórios. Preencha-os e tente novamente."
+           
+        })
     }
-    filmesMarcantes.push(novoFilme)
 
-    return res.status(201).json(novoFilme)
+// Validação de existência de água
+if ( agua != "sim" && agua != "não"){
+    return res.status(400).send({ message: "O campo agua deve ser preenchido com 'sim' ou 'não'!"
+    }
+)}
+const novoPlaneta = {
+    id:  Number(Math.floor(Math.random() * 99)+1),
+    nome,
+    temperatura,
+    agua,
+    atm,
+}
+
+planetas.push(novoPlaneta)
+return res.status(201).send({ message: "Planeta criado com sucesso!", novoPlaneta
+
 })
+    })    
+    
+    
 
-//Rota para buscar um elemento especifico do filmesMarcantes
-filmesRoutes.get("/:id", (req, res) => {
+//Rota para buscar um elemento especifico do planetas
+planetasRoutes.get("/:id", (req, res) => {
     const { id } = req.params
 
-    const filme = filmesMarcantes.find((movie) => movie.id === Number(id))
+    const planeta = planetas.find((movie) => movie.id === Number(id))
 
 
-    if (!filme) {
-        return res.status(404).send ({ message: "Filme não encontrado"})
+    if (!planeta) {
+        return res.status(404).send ({ message: "planeta não encontrado"})
     }
 
-    return res.status(200).send(filme)
+    return res.status(200).send(planeta)
 })
 
-// Rota para editar um  filmesMarcantes
-filmesRoutes.put("/:id", (req,res) => {
+// Rota para editar um  planetas
+planetasRoutes.put("/:id", (req,res) => {
     const { id } = req.params
 
-    const filme = filmesMarcantes.find((movie) => movie.id === Number(id))
+    const planeta = PlanetasRoutes.find((movie) => movie.id === Number(id))
 
 
-    if (!filme) {
-        return res.status(404).send ({ message: "Filme não encontrado"})
+    if (!planeta) {
+        return res.status(404).send ({ message: "planeta não encontrado"})
     }
 
-    const {titulo, genero, emCartaz} = req.body
+    const {nome, temperatura, agua} = req.body
 
-    filme.titulo = titulo
-    filme.genero = genero
-    filme.emCartaz= emCartaz
+    planeta.nome = titulo
+    planeta.temperatura = temperatura
+    planeta.agua= agua
 
     return res.status(200).send({
-        message: "Filme atualizado",
+        message: "planeta atualizado",
        
     })
 })
 
 
-// Rota para deletar uma filmesMarcantes
-filmesRoutes.delete("/:id", (req, res) => {
+// Rota para deletar uma Planetas Routes
+planetasRoutes.delete("/:id", (req, res) => {
     const { id } = req.params
 
-    const filme = filmesMarcantes.find((movie) => movie.id === Number(id))
+    const planeta = planetas.find((movie) => movie.id === Number(id))
 
-    if (!filme) {
-        return res.status(404).send ({ message: "Filme não encontrado"})
+    if (!planeta) {
+        return res.status(404).send ({ message: "planeta não encontrado"})
     }
     
 
-    filmesMarcantes = filmesMarcantes.filter((movie) => movie.id !== Number(id));
+    planetas = planetas.filter((movie) => movie.id !== Number(id));
 
-    return res.status(200).send({ message: "Filme deletado!",
+    return res.status(200).send({ message: "planeta deletado!",
   
     })
 
 })
 
-export default filmesRoutes // Exportar por padrão
+export default planetasRoutes // Exportar por padrão
